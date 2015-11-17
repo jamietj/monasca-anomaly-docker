@@ -16,7 +16,25 @@ RUN pip install https://s3-us-west-2.amazonaws.com/artifacts.numenta.org/numenta
 RUN pip install -r requirements.txt
 RUN python setup.py install
 
+#install jq, stress and nano 
+RUN apt-get install jq
+RUN apt-get install stress
+RUN apt-get install nano
+RUN apt-get -y install curl
+
 RUN apt-get clean 
+
+#add env vars and fix some bugs in kafka
+COPY ./.bashrc /root/
+COPY ./aggregator.py /opt/monasca/local/lib/python2.7/site-packages/monasca_agent/common/
+
+#add the OTE connector script
+RUN mkdir /home/OTE
+COPY ./seccrit-resilience-reactive.box_connector.sh /home/OTE/seccrit-resilience-reactive.box_connector.sh
+RUN chmod +x /home/OTE/seccrit-resilience-reactive.box_connector.sh
+
+#add the changes to the notification webhook script to call the box_connector
+COPY ./webhook_notifier.py /opt/monasca/lib/python2.7/site-packages/monasca_notification/types/webhook_notifier.py
 
 #remove tail from old start script
 RUN sed -i '/tail -f/d' /setup/demo-start.sh
@@ -25,3 +43,4 @@ RUN sed -i '/tail -f/d' /setup/demo-start.sh
 EXPOSE 80 5000 35357 8080
 
 CMD ["/setup/anomaly-start.sh"]
+
