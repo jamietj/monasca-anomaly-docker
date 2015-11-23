@@ -30,6 +30,12 @@ function send_json {
 timestamp=$(($(date +%s%N)/1000000))
 json=$(echo $@ | jq -c -M '.timestamp="{timestamp}"' | sed -e "s/\"{timestamp}\"/{\"\$date\":$timestamp}/g")
 
+json=$(echo $json | jq -c -M '.facility="OTE"')
+json=$(echo $json | jq -c -M '.tool="resiliencefw"')
+json=$(echo $json | jq -c -M '.severity=5')
+
+echo $json > "/home/OTE/raw.json"
+
 login_authtoken=$(cat $RB_PATH$RB_AUTHINFO 2>/dev/null | head -1 2>/dev/null)
 login_userId=$(cat $RB_PATH$RB_AUTHINFO 2>/dev/null | tail -1 2>/dev/null)
 
