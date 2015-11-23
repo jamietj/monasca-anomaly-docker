@@ -12,6 +12,7 @@ RUN git clone https://github.com/biirdy/monasca-anomaly.git
 WORKDIR /monasca-anomaly
 RUN pip install numpy
 RUN apt-get install -y libatlas-base-dev gfortran
+RUN pip install https://s3-us-west-2.amazonaws.com/artifacts.numenta.org/numenta/nupic/releases/nupic-0.2.6-cp27-none-linux_x86_64.whl
 RUN pip install https://s3-us-west-2.amazonaws.com/artifacts.numenta.org/numenta/nupic.core/releases/nupic.bindings/nupic.bindings-0.1.5-cp27-none-linux_x86_64.whl
 RUN pip install -r requirements.txt
 RUN python setup.py install
